@@ -1,0 +1,493 @@
+/* The look is a chess book that a study group is marking up.
+   See docs/design/client.md for the plan behind these values. */
+
+:root {
+  color-scheme: light;
+
+  --page: #f3f5f2;
+  --ink: #1b2421;
+  --graphite: #5c6763;
+  --rule: #c8cfca;
+  --hatch: #87928d;
+  --highlighter: #ffe45c;
+  --highlighter-wash: rgb(255 221 51 / 0.6);
+  --ballpoint: #2244a8;
+
+  /* Printed matter: moves and interface. */
+  --sans:
+    "Gill Sans Nova", "Gill Sans", "Gill Sans MT", Candara, "Segoe UI", "Noto Sans", sans-serif;
+  /* Written by people: notes. */
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, "Noto Serif", serif;
+
+  --text-small: 0.875rem;
+  --text-body: 1.0625rem;
+  --text-moves: 1.3125rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ballpoint);
+  outline-offset: 2px;
+}
+
+/* Buttons */
+
+.btn {
+  padding: 0.3em 0.8em;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--page);
+}
+
+.btn:disabled {
+  border-color: var(--rule);
+  color: var(--graphite);
+  cursor: default;
+}
+
+.btn-quiet {
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Page frame */
+
+.app {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 1.25rem clamp(1rem, 4vw, 3rem) 3rem;
+}
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+}
+
+.wordmark {
+  margin-right: auto;
+  font-size: var(--text-moves);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.connection-status {
+  font-size: var(--text-small);
+}
+
+.dot {
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  margin-right: 0.5em;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+}
+
+.dot-connected {
+  background: var(--ink);
+}
+
+.problem {
+  max-width: 44rem;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ink);
+}
+
+/* Study: board on the left, moves and notes on the right */
+
+.study {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 2rem 3.5rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+.board-column {
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* The board never grows taller than the window. */
+.board {
+  width: min(100%, max(20rem, calc(100vh - 13rem)));
+  border: 2px solid var(--ink);
+}
+
+.promotion,
+.board-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.study-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.tool-message {
+  flex-basis: 100%;
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--graphite);
+  font-size: var(--text-small);
+}
+
+.dialog {
+  width: min(36rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--page);
+  color: var(--ink);
+}
+
+.dialog::backdrop {
+  background: rgb(27 36 33 / 0.45);
+}
+
+.dialog label,
+.dialog h2 {
+  margin: 0;
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+
+.dialog p {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.dialog .hint {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.dialog textarea {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--graphite);
+  border-radius: 2px;
+  background: #fbfcfb;
+  line-height: 1.6;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.menu {
+  max-width: 100%;
+  font: inherit;
+  color: inherit;
+}
+
+/* Two fixed rows, so the board controls do not move while the line grows. */
+.engine-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 3.25em;
+  margin-top: 0.75rem;
+  color: var(--graphite);
+  font-size: var(--text-small);
+}
+
+.engine-line p {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.notation-column {
+  max-width: 36rem;
+}
+
+/* Moves, set like a chess book: main line heavy, variations lighter and
+   set in, notes in the hand of whoever wrote them. */
+
+/* Set like the running head of a chess book, above the moves it names. */
+.opening-name {
+  margin: 0 0 0.25rem;
+  color: var(--graphite);
+  font-size: var(--text-small);
+  font-style: italic;
+}
+
+.moves {
+  font-size: var(--text-moves);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.variation {
+  margin: 0.1em 0 0.1em 1.25em;
+  font-size: var(--text-body);
+  font-weight: 400;
+}
+
+.variation .variation {
+  font-size: 1em;
+}
+
+.variation::before {
+  content: "(";
+}
+
+.variation::after {
+  content: ")";
+}
+
+/* The padding gives the highlight some air; the negative margin stops it
+   from pushing brackets and neighbouring moves away. */
+.move {
+  margin: 0 -0.15em;
+  padding: 0 0.15em;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  font-weight: inherit;
+  cursor: pointer;
+}
+
+.move:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.move[aria-current] {
+  background: var(--highlighter);
+}
+
+.move-number {
+  font-weight: 400;
+}
+
+.move-comment {
+  margin-left: 0.15em;
+  color: var(--ballpoint);
+  font-family: var(--serif);
+  font-size: var(--text-body);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.empty {
+  color: var(--graphite);
+}
+
+.move-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.move-actions-label {
+  margin-right: auto;
+  font-weight: 600;
+}
+
+/* Notes */
+
+.comment-box {
+  margin-top: 1.5rem;
+}
+
+.comment-box label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: var(--text-small);
+}
+
+.comment-box textarea {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--graphite);
+  border-radius: 2px;
+  background: #fbfcfb;
+  color: var(--ballpoint);
+  font-family: var(--serif);
+  font-style: italic;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.comment-box textarea::placeholder {
+  color: var(--graphite);
+}
+
+.comment-count {
+  margin-top: 0.25rem;
+  color: var(--graphite);
+  font-size: var(--text-small);
+}
+
+/* Deleted lines */
+
+.hidden-work {
+  margin-bottom: 1.25rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--ballpoint);
+}
+
+.hidden-work .btn {
+  margin-left: 0.5rem;
+}
+
+.deleted-lines {
+  margin-top: 2.5rem;
+}
+
+.deleted-lines h2,
+.network-controls h2 {
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+
+.deleted-lines ul {
+  padding: 0;
+  list-style: none;
+}
+
+.deleted-lines li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.deleted-line-name {
+  text-decoration: line-through;
+}
+
+.deleted-line-size {
+  margin-right: auto;
+  color: var(--graphite);
+  font-size: var(--text-small);
+}
+
+/* Connection test */
+
+.footer {
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.network-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 2rem;
+  font-size: var(--text-small);
+}
+
+.network-controls input {
+  accent-color: var(--ink);
+}
+
+.check,
+.slider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.slider output {
+  min-width: 3.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  flex-basis: 100%;
+  color: var(--graphite);
+}
+
+/* Whole-page messages */
+
+.notice {
+  max-width: 32rem;
+  margin: 18vh auto 0;
+  padding: 0 1.25rem;
+}
+
+.notice h1 {
+  margin-bottom: 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.notice p + p {
+  margin-top: 0.75rem;
+}
+
+.notice a {
+  color: var(--ballpoint);
+}
+
+/* Phone: one column, board first and full width */
+
+@media (max-width: 52rem) {
+  .study {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .board-column {
+    position: static;
+  }
+
+  .board {
+    width: 100%;
+  }
+}
