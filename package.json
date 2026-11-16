@@ -1,0 +1,33 @@
+{
+  "name": "blunder-together",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core",
+    "web",
+    "e2e"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test",
+    "test:sim": "npm run test:sim --workspace core",
+    "test:e2e": "npm run test:e2e --workspace e2e",
+    "bench": "BENCH=1 npm run test:e2e --workspace e2e -- benchmark --disable-console-intercept"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.10.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^4.1.12"
+  }
+}

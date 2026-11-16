@@ -1,0 +1,33 @@
+{
+  "name": "two replicas play the same move",
+  "ops": [
+    {
+      "type": "addMove",
+      "opId": "op-b1",
+      "replicaId": "b",
+      "ts": { "counter": 1, "replicaId": "b" },
+      "parentId": "root",
+      "uci": "e2e4"
+    },
+    {
+      "type": "addMove",
+      "opId": "op-a1",
+      "replicaId": "a",
+      "ts": { "counter": 1, "replicaId": "a" },
+      "parentId": "root",
+      "uci": "e2e4"
+    }
+  ],
+  "expected": {
+    "comments": {},
+    "deleted": {},
+    "mainline": {},
+    "moves": {
+      "8b6d7c05d029189e5127b0de1a1442dd": {
+        "firstTs": { "counter": 1, "replicaId": "a" },
+        "parentId": "root",
+        "uci": "e2e4"
+      }
+    }
+  }
+}
