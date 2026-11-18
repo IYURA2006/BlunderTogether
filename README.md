@@ -131,25 +131,6 @@ client on the same machine.
 There is no network between client and server in these numbers, so they
 show the cost of the code, not of a real connection.
 
-## Known limitations
-
-Each of these is left out on purpose.
-
-| Not built                                       | Why                                                                                                                              |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Peer-to-peer transport (WebRTC)                 | Operations do not care how they travel; a server was the shortest path to a reliable demo                                        |
-| Character-level merging of notes                | Needs a sequence CRDT. A whole note is last-writer-wins, so one of two concurrent edits is lost                                  |
-| Accounts and permissions                        | A room is private only because its link is hard to guess                                                                         |
-| Protection against malicious clients            | The server trusts operation contents. Illegal moves are filtered when the tree is derived                                        |
-| Log compaction                                  | Nothing is ever removed. A study is a few hundred operations                                                                     |
-| More than one server instance                   | One process with SQLite. Scaling out needs a shared log and pub/sub                                                              |
-| Several tabs of one room in one browser profile | A lock allows one tab; the others say so                                                                                         |
-| Catch-up that does not pause the room           | The room reads the log itself. A catch-up above 32,000 operations drops the client                                               |
-| Recovery from a lost server database            | A client whose cursor is ahead of the log receives nothing until the log passes it                                               |
-| Heartbeats                                      | A client that vanishes without closing stays in its room until a write to it fails                                               |
-| Fast import of very long games                  | Each imported move is saved in its own IndexedDB transaction, about 10 to 14 ms per move in Chrome. A 160-move import took 2.3 s |
-| A complete opening book                         | About 40 openings are listed by hand. Lines outside them keep the last name they matched                                         |
-| Multi-threaded or self-compiled engine          | Engine strength is not what the project shows                                                                                    |
 
 ## Layout
 
