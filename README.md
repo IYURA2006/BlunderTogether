@@ -131,7 +131,6 @@ client on the same machine.
 There is no network between client and server in these numbers, so they
 show the cost of the code, not of a real connection.
 
-
 ## Layout
 
 | Folder      | Holds                                                     |
